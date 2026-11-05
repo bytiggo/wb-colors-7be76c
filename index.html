@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow">
+<title>Цвета для новинок</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Рабочий инструмент закупщика: слева разделы, справа расчёт. Один светлый вид: цвета таблиц (шкалы, плашки цветов) рассчитаны на белый фон. */
+:root {
+  --bg: #f4f6f3; --surface: #ffffff; --ink: #1b2522; --muted: #5f6b66; --line: #dde2dc; --line-strong: #c3cbc4;
+  --accent: #0d6b5a; --accent-soft: #e2f1ec; --danger: #b3261e; --warm: #fff6d6;
+  --font: "Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --r: 6px;
+  color-scheme: light;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 var(--font); font-variant-numeric: tabular-nums; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+#app { display: grid; grid-template-columns: 264px minmax(0, 1fr); height: 100%; }
+#boot { padding: 32px; color: var(--muted); }
+
+/* ---- разделы */
+nav.side { background: var(--surface); border-right: 1px solid var(--line); overflow-y: auto; padding-block: 16px; padding-left: max(14px, env(safe-area-inset-left, 0px)); padding-right: 14px; display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+.brand { font-weight: 700; font-size: 16px; line-height: 1.2; }
+.brand small { display: block; font-weight: 400; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.navgroup { display: flex; flex-direction: column; gap: 1px; }
+.navgroup h2 { margin: 0 0 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.navbtn { display: block; width: 100%; text-align: left; background: none; border: 0; border-radius: var(--r); padding: 5px 8px; cursor: pointer; }
+.navbtn:hover { background: var(--bg); }
+.navbtn[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.navbtn.main { font-weight: 700; padding-block: 10px; font-size: 14.5px; background: var(--accent-soft); color: var(--accent); border: 1px solid #b9dccf; }
+.navbtn.main[aria-current="page"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+.navbtn .ni { display: inline-block; width: 22px; margin-right: 4px; text-align: center; }
+.navcard { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 8px 8px; }
+.navcard.all { background: #eef3fb; border-color: #d3def2; }
+.navcard .navbtn:hover { background: rgba(255, 255, 255, .8); }
+.navcard .navbtn[aria-current="page"] { background: var(--surface); box-shadow: inset 3px 0 0 var(--accent), 0 1px 2px rgba(0, 0, 0, .08); }
+.navcard > h2 { margin: 0 0 8px 2px; font-size: 13px; letter-spacing: 0; text-transform: none; color: var(--ink); font-weight: 700; }
+.navsub { margin: 8px 0 2px 4px; padding-top: 6px; border-top: 1px solid var(--line); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.navcard > select.catsel + .navsub { border-top: 0; padding-top: 0; margin-top: 4px; }
+.navcard > h2 + .navsub { border-top: 0; padding-top: 0; margin-top: 0; }
+select.catsel, .field select { width: 100%; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: var(--r); background: var(--surface); }
+.navgroup select.catsel { margin-bottom: 6px; font-weight: 600; }
+
+main { min-width: 0; min-height: 0; overflow: auto; padding-block: 18px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main.fill { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0; }
+
+/* ---- заголовок вида */
+.vhead { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 12px; }
+.vhead h1 { margin: 0; font-size: 21px; line-height: 1.2; font-weight: 700; text-wrap: balance; }
+.vhead .sp { flex: 1 1 auto; }
+.btn { background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r); padding: 6px 12px; cursor: pointer; white-space: nowrap; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.btn.primary:hover { background: #0a5a4c; }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn.small { padding: 3px 8px; font-size: 13px; }
+.btn.danger { color: var(--danger); }
+input.q { padding: 6px 9px; border: 1px solid var(--line-strong); border-radius: var(--r); width: min(280px, 100%); background: var(--surface); }
+
+/* ---- форма калькулятора */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; margin-bottom: 14px; }
+.form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 14px; }
+.field { min-width: 0; position: relative; display: flex; flex-direction: column; gap: 4px; }
+.field > label, .field > .lab { font-size: 12px; font-weight: 600; color: var(--muted); }
+.field input[type=number] { width: 100%; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: var(--r); font-weight: 600; background: var(--surface); }
+.seg { display: flex; border: 1px solid var(--line-strong); border-radius: var(--r); overflow: hidden; }
+.seg button { flex: 1 1 0; border: 0; background: var(--surface); padding: 6px 4px; cursor: pointer; white-space: nowrap; }
+.seg button + button { border-left: 1px solid var(--line-strong); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 600; }
+.seg button:disabled { color: var(--line-strong); cursor: default; }
+.pickers { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 14px; margin-top: 12px; }
+.pickbtn { width: 100%; display: flex; gap: 6px; align-items: center; text-align: left; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r); padding: 6px 8px; cursor: pointer; min-height: 34px; }
+.pickbtn:hover { border-color: var(--accent); }
+.pickbtn .sum { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pickbtn .sum.none { color: var(--muted); }
+.pickbtn.has { background: var(--accent-soft); border-color: var(--accent); }
+.pickbtn .arr { color: var(--muted); }
+.pickbtn:disabled { background: var(--bg); color: var(--muted); cursor: default; border-color: var(--line); }
+.panel { position: absolute; z-index: 30; top: 100%; left: 0; margin-top: 4px; width: max(100%, min(360px, 86vw)); background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r); box-shadow: 0 8px 24px rgba(20, 40, 30, .16); padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.panel.right { left: auto; right: 0; }
+.panel input.search { width: 100%; padding: 6px 9px; border: 1px solid var(--line-strong); border-radius: var(--r); }
+.panel .meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); }
+.panel .linkbtn { background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0; font-size: 12px; }
+.panel .list { max-height: min(340px, 50vh); overflow-y: auto; display: flex; flex-direction: column; }
+.opt { display: flex; gap: 8px; align-items: flex-start; padding: 4px 6px; border-radius: 4px; cursor: pointer; }
+.opt:hover { background: var(--bg); }
+.opt input { margin: 3px 0 0; flex: none; }
+.opt.on { font-weight: 600; }
+.opt mark { background: var(--warm); color: inherit; padding: 0; }
+.panel .empty { padding: 10px 6px; color: var(--muted); }
+.warnline { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+
+/* ---- таблица цветов */
+.scroll { overflow-x: auto; }
+table.t { border-collapse: collapse; width: 100%; min-width: 860px; }
+table.t th { background: var(--ink); color: #fff; font-size: 12px; font-weight: 600; padding: 6px 8px; text-align: center; line-height: 1.2; }
+table.t th.l, table.t td.l { text-align: left; }
+table.t td { padding: 4px 8px; border-bottom: 1px solid var(--line); text-align: center; white-space: nowrap; }
+table.t tr.off td { color: #aeb5b1; }
+table.t tr.off td.hint { color: #aeb5b1; font-weight: 400; }
+table.t td.c0 { width: 26px; padding: 3px 0 3px 6px; }
+.sw { display: inline-block; width: 18px; height: 18px; border: 1px solid #c9cfca; border-radius: 3px; vertical-align: middle; }
+table.t .stick { position: sticky; left: 0; background: var(--surface); z-index: 1; }
+table.t th.stick { background: var(--ink); }
+table.t tr.total td { background: #eef1ed; font-weight: 700; }
+table.t td.hint { text-align: left; font-size: 13px; font-weight: 500; }
+table.t td.qty { font-weight: 700; }
+input.tick { width: 16px; height: 16px; margin: 0; vertical-align: middle; accent-color: var(--accent); cursor: pointer; }
+.sizehead { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; margin-bottom: 8px; }
+.sizehead h2 { margin: 0; font-size: 16px; }
+.sizehead .grid { font-weight: 600; }
+.sizehead .info { color: var(--muted); font-size: 13px; }
+table.t.sizes { min-width: 0; width: auto; }
+table.t.sizes td, table.t.sizes th { min-width: 50px; }
+table.t.sizes td.l, table.t.sizes th.l { min-width: 150px; }
+table.t.sizes tr.grey td { color: #8d9591; font-style: italic; }
+table.t.sizes tr.soft td { color: var(--muted); font-style: italic; }
+.notes { color: var(--muted); font-size: 13px; display: flex; flex-direction: column; gap: 6px; max-width: 72em; }
+.notes p { margin: 0; }
+
+/* ---- сохранённые расчёты */
+.saved { display: flex; flex-direction: column; gap: 10px; }
+.saverow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.saverow input { flex: 1 1 220px; min-width: 0; padding: 6px 9px; border: 1px solid var(--line-strong); border-radius: var(--r); }
+.where { font-size: 12px; color: var(--muted); }
+.slist { display: flex; flex-direction: column; }
+.sitem { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
+.sitem .nm { flex: 1 1 200px; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+.sitem .who { font-size: 12px; color: var(--muted); }
+#toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: #fff; padding: 8px 14px; border-radius: var(--r); z-index: 60; max-width: 90vw; }
+
+/* ---- листы-отчёты */
+.sheetbar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 10px; flex: none; }
+.sheetbar h1 { margin: 0; font-size: 18px; }
+.sheetwrap { flex: 1 1 auto; min-height: 0; overflow: auto; background: var(--surface); border: 1px solid var(--line); border-bottom: 0; border-radius: var(--r) var(--r) 0 0; }
+table.x { border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 13px; }
+table.x td { padding: 2px 5px; white-space: pre-line; overflow-wrap: break-word; hyphens: auto; vertical-align: middle; line-height: 1.3; }
+table.x td.num { white-space: nowrap; overflow: hidden; }
+table.x td.flow, table.x td.flowin { white-space: normal; padding-block: 3px; hyphens: manual; }
+table.x td.flow > div { position: sticky; left: 8px; max-width: min(960px, 88vw); white-space: pre-line; }
+table.x td.flowin > div { max-width: min(900px, 76vw); white-space: pre-line; }
+table.x td a { color: #1d5fd1; }
+table.x tr.strip td { padding: 0; font-size: 0; line-height: 0; }
+table.x .stickr { position: sticky; top: 0; z-index: 2; }
+table.x .stickc { position: sticky; z-index: 1; }
+table.x .stickr.stickc { z-index: 3; }
+table.x .plain { background: var(--surface); }
+table.x tr.toggle td { cursor: pointer; }
+table.x tr.toggle:hover td { background: var(--bg); }
+table.x tr[hidden] { display: none; }
+
+@media (max-width: 860px) {
+  #app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  nav.side { border-right: 0; border-bottom: 1px solid var(--line); padding-block: 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); gap: 6px; flex-direction: row; overflow-x: auto; align-items: center; }
+  .brand { display: none; }
+  .navgroup { flex-direction: row; align-items: center; gap: 4px; flex: none; }
+  .navgroup h2, .navsub { display: none; }
+  .navcard, .navcard.all { background: none; border: 0; padding: 0; border-radius: 0; }
+  .navcard.all { border-left: 1px solid var(--line-strong); padding-left: 8px; margin-left: 4px; }
+  .navbtn { width: auto; white-space: nowrap; }
+  .navbtn.main { font-size: 14px; padding-block: 6px; }
+  .navbtn .ni { width: auto; margin-right: 2px; }
+  .navgroup select.catsel { width: 150px; margin: 0; }
+  .form { grid-template-columns: minmax(0, 1fr); }
+  .panel, .panel.right { left: 0; right: auto; width: 100%; }
+}
+@media (prefers-reduced-motion: no-preference) { .navbtn, .btn, .pickbtn { transition: background-color .12s, border-color .12s; } }
+</style></head><body>
+
+<div id="app"><nav class="side" id="side" aria-label="Разделы"></nav><main id="main"><div id="boot">Открываю калькулятор…</div></main></div>
+<script>
+/* Расчёт калькулятора заказа. Повторяет формулы листа «Калькулятор заказа» (v3_calc.py) один в один;
+   сверяется с настоящим Excel: test_golden.py + test_compare.js. */
+(function (root) {
+  'use strict';
+  var KINDS = ['Фасон', 'Детали', 'Состав', 'Фактура'];
+
+  // ROUND в Excel: половина от нуля, сравнение на 15 значащих цифрах
+  function xlRound(x) {
+    var y = Number(x.toPrecision(15));
+    return y < 0 ? -Math.round(-y) : Math.round(y);
+  }
+
+  function hint(x) {
+    if (x >= 0.9) return 'БАЗА — брать всегда, большая партия';
+    if (x >= 0.75) return 'СИЛЬНЫЙ — брать';
+    if (x >= 0.6) return 'РАБОЧИЙ — 2–4-й цвет линейки';
+    if (x >= 0.5) return 'НИЖЕ СРЕДНЕГО — 4–5-м цветом, меньшей партией';
+    return 'СЛАБЫЙ — только в широкую линейку, тест';
+  }
+
+  // Раскладка штук как в Excel: округляем каждую долю, остаток уходит самой большой доле (при равных — первой).
+  // Если штук меньше, чем долей, у лидера выходил минус (в Excel он скрыт форматом клетки): тогда раздаём метод наибольших остатков.
+  function allocate(total, shares, round) {
+    var top = -1, sum = 0, out = [], i;
+    for (i = 0; i < shares.length; i++) {
+      if (shares[i] > 0 && (top < 0 || shares[i] > shares[top])) top = i;
+      sum += round(shares[i] * total);
+    }
+    var neg = false;
+    for (i = 0; i < shares.length; i++) {
+      if (!(shares[i] > 0)) { out.push(null); continue; }
+      var v = i === top ? total - sum + round(shares[i] * total) : round(shares[i] * total);
+      if (v < 0) neg = true;
+      out.push(v);
+    }
+    if (!neg) return out;
+    var rest = total, order = [];
+    for (i = 0; i < shares.length; i++) {
+      if (!(shares[i] > 0)) continue;
+      out[i] = Math.floor(shares[i] * total); rest -= out[i];
+      order.push(i);
+    }
+    order.sort(function (a, b) { return (shares[b] * total - out[b]) - (shares[a] * total - out[a]) || a - b; });
+    for (i = 0; i < rest; i++) out[order[i % order.length]]++;
+    return out;
+  }
+
+  function defaultState(C, cat) {
+    return {
+      cat: cat || C.cats[0], src: 'Весь рынок', qty: 1000, seasons: [],
+      picks: { 'Фасон': [], 'Детали': [], 'Состав': [], 'Фактура': [] },
+      colors: C.colors.filter(function (c) { return c.on; }).map(function (c) { return c.name; }),
+      sizeOn: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    };
+  }
+
+  function compute(C, st, opts) {
+    var round = (opts && opts.round) || xlRound;
+    var srcData = (C.data[st.cat] || {})[st.src] || {};
+    var catFactors = C.factors[st.cat];
+    var hasFactors = !!catFactors && Object.keys(catFactors).length > 0;
+    var seasonIdx = st.seasons.map(function (s) { return C.seasons.indexOf(s); });
+    var on = {}; st.colors.forEach(function (c) { on[c] = true; });
+    var cnt = C.colors.filter(function (c) { return on[c.name] && srcData[c.name]; }).length;
+    var kCol = 8 + Math.min(Math.max(cnt, 2), 5) - 2;
+
+    var rows = C.colors.map(function (c) {
+      var d = srcData[c.name], r = { color: c.name, hex: c.hex, on: !!on[c.name], hasData: !!d, base: 0, f: [1, 1, 1, 1], total: 0, share: 0, qty: null, hint: '' };
+      if (d) {
+        var sfac = 1;
+        if (seasonIdx.length) {
+          var sum = 0;
+          seasonIdx.forEach(function (i) { sum += d[1 + i]; });
+          sfac = sum / seasonIdx.length / d[0];
+        }
+        r.base = d[kCol] * sfac;
+      }
+      if (hasFactors) {
+        KINDS.forEach(function (kind, j) {
+          var names = st.picks[kind] || [];
+          if (!names.length) return;
+          var s = 0, table = catFactors[kind] || {};
+          names.forEach(function (n) {
+            var f = table[n] && table[n][c.name];
+            if (f) s += Math.log(f);
+          });
+          r.f[j] = Math.exp(s);
+        });
+      }
+      r.total = r.base * r.f[0] * r.f[1] * r.f[2] * r.f[3];
+      return r;
+    });
+
+    var maxTotal = Math.max.apply(null, rows.map(function (r) { return r.total; }));
+    var sumOn = rows.reduce(function (a, r) { return a + (r.on ? r.total : 0); }, 0);
+    rows.forEach(function (r) {
+      r.hint = !r.hasData ? 'нет данных по этому цвету' : hint(r.total / maxTotal);
+      r.share = r.on && r.total > 0 ? r.total / sumOn : 0;
+    });
+    var qtys = allocate(st.qty, rows.map(function (r) { return r.share; }), round);
+    rows.forEach(function (r, i) { r.qty = qtys[i]; });
+
+    // ---- размеры
+    var z = C.sizes[st.cat], S = { has: !!z, grid: '', info: 'по этой категории данных о размерах нет', labels: [], raw: [], eff: [], sizesCount: '', rows: [], totals: [] };
+    var sel = st.sizeOn;
+    for (var i = 0; i < 10; i++) { S.labels.push(z ? z.labels[i] : ''); S.raw.push(z ? z.shares[i] : 0); }
+    if (z) {
+      S.grid = z.grid;
+      S.info = 'карточек в расчёте: ' + z.cards + (z.weak === '—' || !z.weak ? '' : ' · мало данных: ' + z.weak);
+    }
+    var denom = 0, count = 0;
+    for (i = 0; i < 10; i++) if (sel[i]) { denom += S.raw[i]; if (S.raw[i] > 0) count++; }
+    for (i = 0; i < 10; i++) S.eff.push(sel[i] && S.raw[i] > 0 ? S.raw[i] / denom : 0);
+    if (S.eff.some(function (x) { return x !== 0; })) S.sizesCount = count + ' разм.';
+
+    var tot = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    S.rows = rows.map(function (r) {
+      var o = { color: r.color, hex: r.hex, active: r.qty !== null, cells: [null, null, null, null, null, null, null, null, null, null], total: null, note: '', grey: false };
+      if (r.qty === null) return o;
+      var own = z && z.colors[r.color], sh = own ? own.shares : (z ? z.shares : null);
+      o.note = own ? own.rel : 'общая сетка';
+      o.grey = o.note !== '' && o.note.slice(0, 2) !== 'по';
+      var den = 0;
+      if (sh) for (var k = 0; k < 10; k++) if (sel[k]) den += sh[k];
+      var shares = [];
+      for (k = 0; k < 10; k++) shares.push(den === 0 || !sel[k] ? 0 : sh[k] / den);
+      var byCell = allocate(r.qty, shares, round), t = 0;
+      for (k = 0; k < 10; k++) {
+        if (byCell[k] === null) continue;
+        o.cells[k] = byCell[k]; t += byCell[k]; tot[k] += byCell[k];
+      }
+      o.total = t; tot[10] += t;
+      return o;
+    });
+    S.totals = tot;
+
+    return {
+      rows: rows, cnt: cnt, sizes: S,
+      shareSum: rows.reduce(function (a, r) { return a + r.share; }, 0),
+      qtySum: rows.reduce(function (a, r) { return a + (r.qty || 0); }, 0),
+      noSeasons: C.monthly.indexOf(st.cat) < 0
+    };
+  }
+
+  var api = { compute: compute, defaultState: defaultState, xlRound: xlRound, KINDS: KINDS };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CalcEngine = api;
+})(this);
+
+</script>
+<script>
+/* Интерфейс: разделы, калькулятор, листы-отчёты, сохранённые расчёты, выгрузка в Excel. Расчёт — в calc.js. */
+(function () {
+  'use strict';
+  var E = window.CalcEngine, KINDS = E.KINDS;
+  var C = null, INDEX = null, packs = {}, st = null;
+  var view = { sec: 'calc', sheet: null };
+  var mainEl, navEl;
+  var PICKERS = [
+    { key: 'seasons', kind: 'Сезон', label: 'Сезон продаж', none: 'весь год' },
+    { key: 'Фасон', kind: 'Фасон', label: 'Фасон', none: 'любой' },
+    { key: 'Состав', kind: 'Состав', label: 'Состав', none: 'любой' },
+    { key: 'Фактура', kind: 'Фактура', label: 'Ткань / фактура', none: 'любая' },
+    { key: 'Детали', kind: 'Детали', label: 'Детали', none: 'любые' }
+  ];
+  var LS = { get: function (k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+             set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } } };
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function norm(s) { return String(s).toLowerCase().replace(/ё/g, 'е'); }
+  function el(id) { return document.getElementById(id); }
+  function toast(t) {
+    var x = el('toast');
+    if (!x) { x = document.createElement('div'); x.id = 'toast'; document.body.appendChild(x); }
+    x.textContent = t; x.hidden = false;
+    clearTimeout(toast.t); toast.t = setTimeout(function () { x.hidden = true; }, 3500);
+  }
+
+  // ---- данные лежат внутри страницы сжатыми, распаковка по мере надобности
+  function unpack(id) {
+    // локальная версия держит данные внутри страницы, опубликованная — в соседних файлах
+    var node = el(id);
+    var text = node ? Promise.resolve(node.textContent) : fetch('data/' + id + '.txt').then(function (r) {
+      if (!r.ok) throw new Error('файл данных ' + id + ': ' + r.status);
+      return r.text();
+    });
+    return text.then(function (t) {
+      var bin = Uint8Array.from(atob(t.trim()), function (c) { return c.charCodeAt(0); });
+      return new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream('gzip'))).json();
+    });
+  }
+  function pack(sec) {
+    var id = sec === 'total' ? 'D-total' : 'D-cat' + INDEX.bycat[st.cat].i;
+    if (!packs[id]) packs[id] = unpack(id).then(function (p) { p.id = id; injectStyles(p); return p; });
+    return packs[id];
+  }
+  function injectStyles(p) {
+    var css = p.styles.map(function (s, i) {
+      var r = '';
+      if (s.b) r += 'font-weight:700;'; if (s.i) r += 'font-style:italic;'; if (s.u) r += 'text-decoration:underline;';
+      if (s.z) r += 'font-size:' + Math.round(s.z * 1.18) + 'px;';
+      if (s.c) r += 'color:#' + s.c + ';'; if (s.f) r += 'background:#' + s.f + ';';
+      if (s.a) r += 'text-align:' + (s.a === 'c' ? 'center' : 'right') + ';';
+      if (s.bx) r += 'border:1px solid #D1D5DB;';
+      if (s.bb) r += 'border-bottom:1px solid #' + s.bb + ';';
+      if (s.bt) r += 'border-top:1px solid #' + s.bt + ';';
+      return '.' + p.id.replace(/-/g, '') + 's' + i + '{' + r + '}';
+    }).join('');
+    var tag = document.createElement('style'); tag.textContent = css; document.head.appendChild(tag);
+  }
+
+  // ---- навигация
+  function renderNav() {
+    var opts = C.cats.map(function (c) { return '<option' + (c === st.cat ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('');
+    var ICONS = { 'Калькулятор заказа': '🧮', 'Главное': '🏠', 'Размеры': '📏', 'Сила по сезонам': '📅', 'Фасоны и детали': '✂️', 'Состав и ткань': '🧵', 'Наборы цветов': '🎨', 'Топ моделей': '🏆',
+      'Словарь цветов': '📖', 'Как считали': '💡', 'Проверка точности': '✅', 'Покрытие': '📊', 'Данные': '🗂️', 'Поправки': '⚖️', 'Категории × цвета': '🧩', 'Бренды vs рынок': '🆚', 'Сильные бренды': '💪' };
+    var REF = { 'Словарь цветов': 1, 'Как считали': 1, 'Проверка точности': 1, 'Покрытие': 1, 'Данные': 1, 'Поправки': 1 };   // «справка и проверка», остальное — рабочие таблицы
+    var btn = function (sec, sheet, label, cls) {
+      var cur = view.sec === sec && (view.sheet === sheet);
+      return '<button class="navbtn ' + (cls || '') + '" data-sec="' + sec + '" data-sheet="' + esc(sheet || '') + '"' + (cur ? ' aria-current="page"' : '') + '><span class="ni" aria-hidden="true">' + (ICONS[label] || '•') + '</span>' + esc(label) + '</button>';
+    };
+    var list = function (sec, names) {
+      var a = names.filter(function (s) { return !REF[s]; }), b = names.filter(function (s) { return REF[s]; });
+      return '<div class="navsub">Таблицы</div>' + a.map(function (s) { return btn(sec, s, s); }).join('') +
+        (b.length ? '<div class="navsub">Справка и проверка</div>' + b.map(function (s) { return btn(sec, s, s); }).join('') : '');
+    };
+    navEl.innerHTML = '<div class="brand">Цвета для новинок<small>Wildberries, женская одежда</small></div>' +
+      '<div class="navgroup">' + btn('calc', null, 'Калькулятор заказа', 'main') + '</div>' +
+      '<div class="navgroup navcard"><h2>📂 Одна категория</h2><select class="catsel" id="navcat" aria-label="Категория">' + opts + '</select>' +
+      list('cat', INDEX.bycat[st.cat].sheets) + '</div>' +
+      '<div class="navgroup navcard all"><h2>🌐 Все категории сразу</h2>' + list('total', INDEX.total) + '</div>';
+    el('navcat').onchange = function () { setCat(this.value); };
+    navEl.querySelectorAll('.navbtn').forEach(function (b) {
+      b.onclick = function () { go(b.dataset.sec, b.dataset.sheet || null); };
+    });
+  }
+  function go(sec, sheet) {
+    view = { sec: sec, sheet: sheet };
+    LS.set('wb-view', view);
+    renderNav();
+    renderSheetView.token = null;     // таблица, которая ещё распаковывается, не должна перекрыть новый экран
+    if (sec === 'calc') renderCalcView(); else renderSheetView();
+  }
+  function setCat(cat) {
+    if (cat === st.cat) return;
+    st.cat = cat;
+    st.picks = { 'Фасон': [], 'Детали': [], 'Состав': [], 'Фактура': [] };   // как в Excel: срезы у каждой категории свои
+    st.sizeOn = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];                               // сетка у категории своя
+    if (!C.data[cat] || !C.data[cat][st.src]) st.src = 'Весь рынок';
+    saveDraft();
+    if (view.sec === 'cat' && INDEX.bycat[cat].sheets.indexOf(view.sheet) < 0) view.sheet = INDEX.bycat[cat].sheets[0];
+    go(view.sec, view.sheet);
+  }
+  function saveDraft() { LS.set('wb-draft', st); }
+
+  // ---- форматы
+  var NB = ' ';
+  function fInt(x) { return String(x).replace(/\B(?=(\d{3})+(?!\d))/g, NB); }
+  function fBase(x) { return x > 0 ? fInt(E.xlRound(x)) : '—'; }
+  function fFac(x) { return (E.xlRound(x * 100) / 100).toFixed(2).replace('.', ',') + '×'; }
+  function fPct(x) { return x > 0 ? E.xlRound(x * 100) + '%' : ''; }
+  function hexMix(a, b, t) {
+    var r = '';
+    for (var i = 0; i < 6; i += 2) { var v = Math.round(parseInt(a.substr(i, 2), 16) * (1 - t) + parseInt(b.substr(i, 2), 16) * t); r += (v < 16 ? '0' : '') + v.toString(16); }
+    return '#' + r;
+  }
+  function scale3(v, lo, mid, hi) {
+    if (v <= lo) return '#F8B4B4'; if (v >= hi) return '#7FCF94';
+    return v < mid ? hexMix('F8B4B4', 'FFFFFF', (v - lo) / (mid - lo)) : hexMix('FFFFFF', '7FCF94', (v - mid) / (hi - mid));
+  }
+  var VERDICT = { 'БАЗА': '#15803D', 'СИЛЬ': '#15803D', 'РАБО': '#1D4ED8', 'НИЖЕ': '#B45309', 'СЛАБ': '#B91C1C' };
+
+  // ---- калькулятор
+  function renderCalcView() {
+    mainEl.className = '';
+    var brands = !!(C.data[st.cat] && C.data[st.cat]['Сильные бренды']);
+    mainEl.innerHTML =
+      '<div class="vhead"><h1>Калькулятор заказа новинки</h1><span class="sp"></span>' +
+      '<button class="btn" id="btn-reset">Сбросить выбор</button><button class="btn" id="btn-saved">Сохранённые расчёты</button><button class="btn primary" id="btn-xl">В Excel</button></div>' +
+      '<div class="card saved" id="savedbox" hidden></div>' +
+      '<div class="card"><div class="form">' +
+      '<div class="field"><label for="f-cat">Категория</label><select id="f-cat">' + C.cats.map(function (c) { return '<option' + (c === st.cat ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '</select></div>' +
+      '<div class="field"><span class="lab">На чьих данных</span><div class="seg" role="group">' +
+      ['Весь рынок', 'Сильные бренды'].map(function (s) { return '<button data-src="' + s + '" aria-pressed="' + (st.src === s) + '"' + (s !== 'Весь рынок' && !brands ? ' disabled title="По этой категории нет данных сильных брендов"' : '') + '>' + s + '</button>'; }).join('') + '</div></div>' +
+      '<div class="field"><label for="f-qty">Всего штук в заказе</label><input id="f-qty" type="number" min="0" step="1" inputmode="numeric" value="' + st.qty + '"></div>' +
+      '</div><div class="pickers" id="pickers"></div><p class="warnline" id="seasonwarn" hidden></p></div>' +
+      '<div class="card"><div class="scroll" id="r-colors"></div></div>' +
+      '<div class="card" id="r-sizes"></div>' +
+      '<div class="notes">' + NOTES.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div>';
+    el('f-cat').onchange = function () { setCat(this.value); };
+    el('f-qty').oninput = function () {
+      var v = parseInt(this.value, 10);
+      st.qty = isFinite(v) && v >= 0 ? Math.min(v, 100000000) : 0;
+      saveDraft(); renderResults();
+    };
+    mainEl.querySelectorAll('.seg button').forEach(function (b) {
+      b.onclick = function () { st.src = b.dataset.src; saveDraft(); renderCalcView(); };
+    });
+    el('btn-reset').onclick = function () {
+      var keep = st.cat; st = E.defaultState(C, keep); saveDraft(); renderCalcView();
+    };
+    el('btn-saved').onclick = function () { var b = el('savedbox'); b.hidden = !b.hidden; if (!b.hidden) renderSaved(); };
+    el('btn-xl').onclick = exportCalc;
+    renderPickers();
+    renderResults();
+    updateSavedBtn();
+    if (Store.openBox) { el('savedbox').hidden = false; renderSaved(); }
+  }
+
+  var NOTES = [
+    'Сила итого = сила (база: категория, сезон, число цветов, источник) × поправки фасона, деталей, состава и ткани. Доля цвета = его сила ÷ сумма сил выбранных цветов.',
+    'Несколько значений: сезоны усредняются (например «Весна» + «Лето» = середина между ними); фасоны, детали, состав и ткань — поправки перемножаются (например «Оверсайз» × «В полоску»).',
+    'Поправка = во сколько раз цвет у этого среза продаётся лучше (>1) или хуже (<1), чем в категории в среднем. Если моделей мало, поправка прижата к 1.',
+    'В списках — все варианты, у которых не меньше 30 моделей, сверху самые ходовые по выручке рынка. Поправка есть у тех, что на проверке (20% моделей отложены) уточнили прогноз, и у редких, которые проверить было не на чем (поправка прижата к 1 вдвое сильнее). У остальных поправка ×1,00: выбор такого варианта не меняет раскладку цветов.',
+    'Точность: у отдельной модели в отдельный месяц доля цвета гуляет ±14–17 п.п. (наличие, фото, реклама); в среднем по похожим моделям — около ±5 п.п.',
+    'Размеры: сними галочку у размеров, которых не будет у новинки, — доли пересчитаются по оставшимся. У каждого цвета своя раскладка (столбец «Сетка цвета»): по карточкам этого цвета, сглаженная к общей сетке категории; «ориентир» — 1–2 карточки, «общая сетка» — данных по цвету нет; такие строки серым. Строка «Доля (в среднем)» — общая сетка категории (среднее по цветам с весом = выручка цвета); остаток от округления — в самый ходовой размер. Подробно — вкладка «Размеры».'
+  ];
+
+  // ---- списки с поиском и галочками
+  var openPicker = null;
+  function pickItems(p) { return p.kind === 'Сезон' ? C.seasons : (C.lists[st.cat][p.kind] || []); }
+  function pickValues(p) { return p.kind === 'Сезон' ? st.seasons : st.picks[p.kind]; }
+  function renderPickers() {
+    var box = el('pickers');
+    box.innerHTML = PICKERS.map(function (p, i) {
+      var items = pickItems(p), vals = pickValues(p), emp = !items.length;
+      return '<div class="field" data-p="' + i + '"><span class="lab">' + esc(p.label) + ' · ' + vals.length + ' из ' + items.length + '</span>' +
+        '<button class="pickbtn' + (vals.length ? ' has' : '') + '" aria-haspopup="listbox" aria-expanded="false"' + (emp ? ' disabled' : '') + '>' +
+        '<span class="sum' + (vals.length ? '' : ' none') + '">' + esc(vals.length ? vals.join(', ') : (emp ? 'в этой категории не влияет на цвета' : p.none)) + '</span><span class="arr" aria-hidden="true">▾</span></button></div>';
+    }).join('');
+    box.querySelectorAll('.field').forEach(function (f) {
+      f.querySelector('.pickbtn').onclick = function (ev) {
+        ev.stopPropagation();
+        var i = +f.dataset.p;
+        if (openPicker === i) closePicker(); else showPanel(i);
+      };
+    });
+    var w = el('seasonwarn');
+    if (C.monthly.indexOf(st.cat) < 0) { w.hidden = false; w.textContent = 'По этой категории есть данные только за весь период — сезон не учитывается.'; } else w.hidden = true;
+  }
+  function closePicker() {
+    openPicker = null;
+    var p = document.querySelector('.panel'); if (p) p.remove();
+    document.querySelectorAll('.pickbtn').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
+  }
+  function showPanel(i) {
+    closePicker();
+    openPicker = i;
+    var p = PICKERS[i], field = document.querySelector('.field[data-p="' + i + '"]'), items = pickItems(p);
+    var long = items.length > 8;
+    var panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.innerHTML = (long ? '<input class="search" type="search" placeholder="Поиск: начни писать слово" aria-label="Поиск в списке" autocomplete="off">' : '') +
+      '<div class="meta"><span class="cnt"></span><button class="linkbtn" type="button">Снять всё</button></div><div class="list" role="listbox" aria-multiselectable="true"></div>';
+    field.appendChild(panel);
+    field.querySelector('.pickbtn').setAttribute('aria-expanded', 'true');
+    var r = panel.getBoundingClientRect();
+    if (r.right > window.innerWidth - 8) panel.classList.add('right');
+    panel.addEventListener('click', function (e) { e.stopPropagation(); });
+    var list = panel.querySelector('.list'), cnt = panel.querySelector('.cnt'), search = panel.querySelector('.search');
+    function draw() {
+      var q = search ? norm(search.value.trim()) : '';
+      var vals = pickValues(p), shown = items.filter(function (n) { return !q || norm(n).indexOf(q) >= 0; });
+      cnt.textContent = 'выбрано ' + vals.length + ' · показано ' + shown.length + ' из ' + items.length;
+      if (!shown.length) { list.innerHTML = '<div class="empty">Ничего не найдено. Попробуй другое слово.</div>'; return; }
+      list.innerHTML = shown.map(function (n) {
+        var on = vals.indexOf(n) >= 0, label = esc(n);
+        if (q) {
+          var at = norm(n).indexOf(q);
+          label = esc(n.slice(0, at)) + '<mark>' + esc(n.slice(at, at + q.length)) + '</mark>' + esc(n.slice(at + q.length));
+        }
+        return '<label class="opt' + (on ? ' on' : '') + '"><input type="checkbox" data-n="' + esc(n) + '"' + (on ? ' checked' : '') + '><span>' + label + '</span></label>';
+      }).join('');
+      list.querySelectorAll('input').forEach(function (c) {
+        c.onchange = function () { toggle(p, c.dataset.n); draw(); if (search) search.focus(); };
+      });
+    }
+    function toggle(pk, name) {
+      var v = pickValues(pk), at = v.indexOf(name);
+      if (at >= 0) v.splice(at, 1); else v.push(name);
+      changed();
+    }
+    function changed() {
+      saveDraft(); renderResults();
+      var vals = pickValues(p), emptyTxt = vals.length ? vals.join(', ') : p.none;
+      var b = field.querySelector('.pickbtn'), s = b.querySelector('.sum');
+      s.textContent = emptyTxt; s.classList.toggle('none', !vals.length); b.classList.toggle('has', !!vals.length);
+      field.querySelector('.lab').textContent = p.label + ' · ' + vals.length + ' из ' + items.length;
+    }
+    panel.querySelector('.linkbtn').onclick = function () { pickValues(p).length = 0; changed(); draw(); };
+    if (search) {
+      search.oninput = draw;
+      search.onkeydown = function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); var f = list.querySelector('input'); if (f) { toggle(p, f.dataset.n); draw(); } }
+      };
+      search.focus();
+    }
+    draw();
+  }
+  document.addEventListener('click', function () { if (openPicker !== null) closePicker(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && openPicker !== null) {
+      var i = openPicker; closePicker();
+      var b = document.querySelector('.field[data-p="' + i + '"] .pickbtn'); if (b) b.focus();
+    }
+  });
+
+  // ---- результат
+  function renderResults() {
+    var R = E.compute(C, st), focus = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.fk : null;
+    var maxQty = Math.max.apply(null, R.rows.map(function (r) { return r.qty || 0; }));
+    var h = '<table class="t" id="tbl-colors"><thead><tr><th></th><th class="l stick">Цвет</th><th>Берём?</th><th>Сила<br>(база)</th><th>×<br>фасон</th><th>×<br>детали</th><th>×<br>состав</th><th>×<br>ткань</th><th>Сила<br>итого</th><th>Доля<br>в заказе</th><th>Штук</th><th class="l">Подсказка</th></tr></thead><tbody>';
+    R.rows.forEach(function (r) {
+      var vcol = r.hasData ? VERDICT[r.hint.slice(0, 4)] : '';
+      h += '<tr class="' + (r.on ? '' : 'off') + '" data-color="' + esc(r.color) + '"><td class="c0"><span class="sw" style="background:#' + r.hex + '"></span></td><td class="l stick"><b>' + esc(r.color) + '</b></td>' +
+        '<td><input class="tick" type="checkbox" data-fk="c:' + esc(r.color) + '" data-color="' + esc(r.color) + '" aria-label="Брать цвет ' + esc(r.color) + '"' + (r.on ? ' checked' : '') + '></td>' +
+        '<td data-f="base"' + (r.hasData ? ' style="background:' + scale3(r.base, 45, 75, 100) + '"' : '') + '>' + fBase(r.base) + '</td>' +
+        r.f.map(function (f, i) { return '<td data-f="f' + i + '" style="background:' + scale3(f, 0.75, 1, 1.3) + '">' + fFac(f) + '</td>'; }).join('') +
+        '<td data-f="total"' + (r.hasData ? ' style="background:' + scale3(r.total, 45, 75, 100) + '"' : '') + '>' + fBase(r.total) + '</td>' +
+        '<td data-f="share">' + fPct(r.share) + '</td>' +
+        '<td class="qty" data-f="qty"' + (r.qty ? ' style="background:linear-gradient(to right,#BFDBFE ' + Math.round(10 + 80 * r.qty / (maxQty || 1)) + '%,transparent 0)"' : '') + '>' + (r.qty === null ? '' : fInt(r.qty)) + '</td>' +
+        '<td class="hint" data-f="hint"' + (r.on && vcol ? ' style="color:' + vcol + '"' : '') + '>' + esc(r.hint) + '</td></tr>';
+    });
+    h += '<tr class="total"><td></td><td class="l stick">Итого</td><td data-f="cnt">' + R.cnt + ' цв.</td><td colspan="6"></td><td data-f="sharesum">' + E.xlRound(R.shareSum * 100) + '%</td><td data-f="qtysum">' + fInt(R.qtySum) + '</td><td></td></tr></tbody></table>';
+    el('r-colors').innerHTML = h;
+    el('r-colors').querySelectorAll('input.tick').forEach(function (c) {
+      c.onchange = function () {
+        var at = st.colors.indexOf(c.dataset.color);
+        if (c.checked && at < 0) st.colors.push(c.dataset.color); if (!c.checked && at >= 0) st.colors.splice(at, 1);
+        saveDraft(); renderResults();
+      };
+    });
+    renderSizes(R);
+    if (focus) { var f = mainEl.querySelector('[data-fk="' + focus.replace(/"/g, '\\"') + '"]'); if (f) f.focus(); }
+  }
+
+  function renderSizes(R) {
+    var S = R.sizes, box = el('r-sizes');
+    var idx = []; S.labels.forEach(function (l, i) { if (l !== '') idx.push(i); });
+    var h = '<div class="sizehead"><h2>Размеры</h2><span class="grid">' + esc(S.grid) + '</span><span class="info" id="size-info">' + esc(S.info) + '</span></div>';
+    if (!S.has) { box.innerHTML = h; return; }
+    var effMax = Math.max.apply(null, S.eff);
+    var cellMax = 0; S.rows.forEach(function (r) { r.cells.forEach(function (v) { if (v > cellMax) cellMax = v; }); });
+    h += '<div class="scroll"><table class="t sizes" id="tbl-sizes"><thead><tr><th class="l stick">Цвет \\ размер</th>' + idx.map(function (i) { return '<th>' + esc(S.labels[i]) + '</th>'; }).join('') + '<th>Всего</th><th class="l">Сетка цвета</th></tr></thead><tbody>';
+    h += '<tr class="soft"><td class="l stick">Доля (общая)</td>' + idx.map(function (i) { return '<td>' + fPct(S.raw[i]) + '</td>'; }).join('') + '<td></td><td></td></tr>';
+    h += '<tr><td class="l stick"><b>Берём?</b></td>' + idx.map(function (i) { return '<td><input class="tick" type="checkbox" data-size="' + i + '" data-fk="s:' + i + '" aria-label="Брать размер ' + esc(S.labels[i]) + '"' + (st.sizeOn[i] ? ' checked' : '') + '></td>'; }).join('') + '<td></td><td></td></tr>';
+    h += '<tr><td class="l stick"><b>Доля (в среднем)</b></td>' + idx.map(function (i) { return '<td data-eff="' + i + '" style="background:' + hexMix('FFFFFF', '93C5FD', effMax ? S.eff[i] / effMax : 0) + '"><b>' + fPct(S.eff[i]) + '</b></td>'; }).join('') + '<td>' + esc(S.sizesCount) + '</td><td></td></tr>';
+    S.rows.forEach(function (r) {
+      if (!r.active) return;
+      h += '<tr class="' + (r.grey ? 'grey' : '') + '" data-size-color="' + esc(r.color) + '"><td class="l stick"><span class="sw" style="background:#' + r.hex + ';width:12px;height:12px"></span> <b>' + esc(r.color) + '</b></td>' +
+        idx.map(function (i) { var v = r.cells[i]; return '<td data-sz="' + i + '"' + (v ? ' style="background:' + hexMix('FFFFFF', '86D19A', v / (cellMax || 1)) + '"' : '') + '>' + (v === null ? '' : (v === 0 ? '—' : fInt(v))) + '</td>'; }).join('') +
+        '<td data-sz="t"><b>' + (r.total ? fInt(r.total) : '') + '</b></td><td class="l" style="font-size:12px">' + esc(r.note) + '</td></tr>';
+    });
+    h += '<tr class="total"><td class="l stick">Итого по размеру</td>' + idx.map(function (i) { return '<td data-szt="' + i + '">' + (S.totals[i] ? fInt(S.totals[i]) : '—') + '</td>'; }).join('') + '<td data-szt="t">' + (S.totals[10] ? fInt(S.totals[10]) : '—') + '</td><td></td></tr></tbody></table></div>';
+    box.innerHTML = h;
+    box.querySelectorAll('input[data-size]').forEach(function (c) {
+      c.onchange = function () { st.sizeOn[+c.dataset.size] = c.checked ? 1 : 0; saveDraft(); renderResults(); };
+    });
+  }
+
+  // ---- листы-отчёты
+  var curSheet = null;
+  function rowHtml(p, sh, row, ri) {
+    var pfx = p.id.replace(/-/g, '') + 's', n = sh.cols.length, h = '', at = 0;
+    var stickyRow = ri === sh.fr - 2 && row.c.some(function (c) { var s = p.styles[c.s]; return s && s.f; });
+    row.c.forEach(function (c) {
+      if (c.i > at) h += '<td colspan="' + (c.i - at) + '"></td>';
+      var s = p.styles[c.s] || {}, cls = pfx + c.s, attrs = '', css = '', text = c.t === undefined ? '' : esc(c.t);
+      var cs = c.cs || 1;
+      if (row.fl) { cs = n - c.i; cls += ' flow'; text = '<div>' + text + '</div>'; }
+      else if (cs > 1 && c.t && c.t.length > 60) { cls += ' flowin'; text = '<div>' + text + '</div>'; }   // абзац рядом с плашкой цвета: не шире экрана
+      if (c.v !== undefined) cls += ' num';
+      if (cs > 1) attrs += ' colspan="' + cs + '"';
+      if (c.bg) css += 'background:#' + c.bg + ';';
+      if (c.bar) css += 'background:linear-gradient(to right,#' + c.bar[1] + ' ' + Math.round(c.bar[0] * 100) + '%,transparent 0);';
+      if (c.u) text = '<a href="' + esc(c.u) + '" target="_blank" rel="noopener noreferrer">' + text + '</a>';
+      if (stickyRow) cls += ' stickr';
+      if (!row.fl && c.i < sh.fc && cs === 1) {
+        var left = 0; for (var k = 0; k < c.i; k++) left += sh.cols[k];
+        cls += ' stickc'; css += 'left:' + left + 'px;';
+        if (!s.f && !c.bg) cls += ' plain';
+      }
+      h += '<td class="' + cls + '"' + attrs + (css ? ' style="' + css + '"' : '') + ' data-c="' + c.i + '">' + text + '</td>';
+      at = c.i + cs;
+    });
+    if (at < n) h += '<td colspan="' + (n - at) + '"></td>';
+    return h;
+  }
+  function sheetTable(p, sh) {
+    var w = sh.cols.reduce(function (a, b) { return a + b; }, 0);
+    var h = '<table class="x" lang="ru" style="width:' + w + 'px" id="sheet-table"><colgroup>' + sh.cols.map(function (c) { return '<col style="width:' + c + 'px">'; }).join('') + '</colgroup><tbody>';
+    sh.rows.forEach(function (r, ri) {
+      if (r.g) return;                                 // свёрнутые строки создаём, только когда их раскроют
+      var next = sh.rows[ri + 1], toggles = next && next.g;
+      var cls = (r.h ? 'strip' : '') + (toggles ? ' toggle' : '');
+      h += '<tr data-r="' + ri + '"' + (cls.trim() ? ' class="' + cls.trim() + '"' : '') + (r.h ? ' style="height:' + r.h + 'px"' : '') + '>' + rowHtml(p, sh, r, ri) + '</tr>';
+    });
+    return h + '</tbody></table>';
+  }
+  function renderSheetView() {
+    var sec = view.sec;
+    mainEl.className = 'fill';
+    mainEl.innerHTML = '<div id="boot">Открываю…</div>';
+    var token = {}; renderSheetView.token = token;
+    pack(sec).then(function (p) {
+      if (renderSheetView.token !== token) return;
+      var sh = p.sheets.find(function (s) { return s.name === view.sheet; }) || p.sheets[0];
+      curSheet = { p: p, sh: sh };
+      var many = sh.rows.length > 40;
+      mainEl.innerHTML = '<div class="sheetbar"><h1>' + esc(sh.name) + (sec === 'cat' ? ' · ' + esc(st.cat) : '') + '</h1>' +
+        (many ? '<input class="q" id="sheet-q" type="search" placeholder="Найти в таблице" aria-label="Найти в таблице">' : '') +
+        '<span style="flex:1"></span><button class="btn" id="btn-sheet-xl">Эта вкладка в Excel</button><button class="btn" id="btn-pack-xl">Весь раздел в Excel</button></div>' +
+        '<div class="sheetwrap" id="sheetwrap">' + sheetTable(p, sh) + '</div>';
+      el('btn-sheet-xl').onclick = function () { exportSheets(p, [sh], (sec === 'cat' ? st.cat + ' — ' : '') + sh.name); };
+      el('btn-pack-xl').onclick = function () { exportSheets(p, p.sheets, sec === 'cat' ? 'Цвета для новинок — ' + st.cat : 'Цвета для новинок — все категории'); };
+      var tbody = mainEl.querySelector('#sheet-table tbody');
+      tbody.addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
+        var tr = e.target.closest('tr.toggle'); if (!tr) return;
+        var ri = +tr.dataset.r, opened = tr.dataset.open === '1';
+        if (opened) {
+          var nx; while ((nx = tr.nextElementSibling) && nx.dataset.g === '1') nx.remove();
+          tr.dataset.open = '';
+        } else {
+          var html = '', k = ri + 1;
+          while (sh.rows[k] && sh.rows[k].g) { html += '<tr data-r="' + k + '" data-g="1">' + rowHtml(p, sh, sh.rows[k], k) + '</tr>'; k++; }
+          tr.insertAdjacentHTML('afterend', html); tr.dataset.open = '1';
+        }
+      });
+      var q = el('sheet-q');
+      if (q) q.oninput = function () {
+        var w = norm(q.value.trim());
+        tbody.querySelectorAll('tr').forEach(function (tr) {
+          var r = sh.rows[+tr.dataset.r], keep = !w || !r || r.fl || r.h || (r.c.length && r.c.some(function (c) { var s = p.styles[c.s]; return s && s.f === '1F2937'; }));
+          tr.hidden = !keep && norm(tr.textContent).indexOf(w) < 0;
+        });
+      };
+    }).catch(function (e) { mainEl.innerHTML = '<div id="boot">Не получилось открыть таблицу: ' + esc(e.message || e) + '</div>'; });
+  }
+
+  // ---- выгрузка в Excel
+  function loadXlsx() {
+    if (window.XLSX) return Promise.resolve(window.XLSX);
+    return new Promise(function (ok, bad) {
+      var s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload = function () { ok(window.XLSX); };
+      s.onerror = function () { bad(new Error('Не загрузился модуль выгрузки: нужен интернет.')); };
+      document.head.appendChild(s);
+    });
+  }
+  function saveFile(name, data) {
+    var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    var dl = window.claude && window.claude.use ? window.claude.use('downloads') : Promise.resolve(null);
+    return dl.then(function (d) {
+      if (d) return d.save({ filename: name, data: blob }).then(function () { toast('Файл сохранён: ' + name); }, function (e) {
+        if (e && e.code === 'declined') return;
+        toast('Не получилось сохранить файл: ' + (e && e.message || e));
+      });
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+      toast('Файл сохранён: ' + name);
+    });
+  }
+  function fileSafe(s) { return s.replace(/[\\/:*?"<>|]/g, ' ') + '.xlsx'; }
+  function sheetName(s) { return s.replace(/[\\/:*?\[\]]/g, ' ').slice(0, 31); }
+
+  function exportCalc() {
+    loadXlsx().then(function (X) {
+      var R = E.compute(C, st), rows = [], z = {};
+      var add = function (a) { rows.push(a); return rows.length - 1; };
+      add(['Калькулятор заказа новинки']); add([]);
+      add(['Категория', st.cat]); add(['На чьих данных', st.src]); add(['Всего штук в заказе', st.qty]);
+      PICKERS.forEach(function (p) { add([p.label, pickValues(p).join(', ') || p.none]); });
+      add([]);
+      add(['Цвет', 'Берём?', 'Сила (база)', '× фасон', '× детали', '× состав', '× ткань', 'Сила итого', 'Доля в заказе', 'Штук', 'Подсказка']);
+      R.rows.forEach(function (r) {
+        var i = add([r.color, r.on ? 1 : null, r.base || null, r.f[0], r.f[1], r.f[2], r.f[3], r.total || null, r.share || null, r.qty, r.hint]);
+        z[i] = { 2: '0', 3: '0.00', 4: '0.00', 5: '0.00', 6: '0.00', 7: '0', 8: '0%' };
+      });
+      var ti = add(['Итого', R.cnt, null, null, null, null, null, null, R.shareSum, R.qtySum, null]); z[ti] = { 8: '0%' };
+      add([]);
+      var S = R.sizes;
+      add(['Размеры', S.grid, S.info]);
+      if (S.has) {
+        var idx = []; S.labels.forEach(function (l, i) { if (l !== '') idx.push(i); });
+        var pct = {}; idx.forEach(function (_, n) { pct[n + 1] = '0%'; });
+        add(['Цвет \\ размер'].concat(idx.map(function (i) { return S.labels[i]; }), ['Всего', 'Сетка цвета']));
+        z[add(['Доля (общая)'].concat(idx.map(function (i) { return S.raw[i]; })))] = pct;
+        add(['Берём?'].concat(idx.map(function (i) { return st.sizeOn[i] ? 1 : null; })));
+        z[add(['Доля (в среднем)'].concat(idx.map(function (i) { return S.eff[i]; }), [S.sizesCount]))] = pct;
+        S.rows.forEach(function (r) { if (r.active) add([r.color].concat(idx.map(function (i) { return r.cells[i]; }), [r.total, r.note])); });
+        add(['Итого по размеру'].concat(idx.map(function (i) { return S.totals[i]; }), [S.totals[10]]));
+      }
+      var ws = X.utils.aoa_to_sheet(rows);
+      Object.keys(z).forEach(function (ri) {
+        Object.keys(z[ri]).forEach(function (ci) { var a = X.utils.encode_cell({ r: +ri, c: +ci }); if (ws[a] && typeof ws[a].v === 'number') ws[a].z = z[ri][ci]; });
+      });
+      ws['!cols'] = [{ wch: 24 }, { wch: 18 }].concat(new Array(8).fill({ wch: 10 }), [{ wch: 44 }]);
+      var wb = X.utils.book_new(); X.utils.book_append_sheet(wb, ws, 'Калькулятор');
+      return saveFile(fileSafe('Расчёт заказа — ' + st.cat), X.write(wb, { type: 'array', bookType: 'xlsx' }));
+    }).catch(function (e) { toast(e.message || String(e)); });
+  }
+  function exportSheets(p, sheets, title) {
+    loadXlsx().then(function (X) {
+      var wb = X.utils.book_new();
+      sheets.forEach(function (sh) {
+        var ws = {}, merges = [], maxc = sh.cols.length;
+        sh.rows.forEach(function (r, ri) {
+          r.c.forEach(function (c) {
+            var val = c.v !== undefined ? c.v : c.t;
+            if (val !== undefined) {
+              var cell = typeof val === 'number' ? { t: 'n', v: val } : { t: 's', v: val };
+              var s = p.styles[c.s]; if (s && s.n && cell.t === 'n') cell.z = s.n;
+              if (c.u) cell.l = { Target: c.u };
+              ws[X.utils.encode_cell({ r: ri, c: c.i })] = cell;
+            }
+            if ((c.cs || 1) > 1 && val !== undefined) merges.push({ s: { r: ri, c: c.i }, e: { r: ri, c: c.i + c.cs - 1 } });
+          });
+        });
+        ws['!ref'] = X.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: Math.max(sh.rows.length - 1, 0), c: Math.max(maxc - 1, 0) } });
+        ws['!merges'] = merges;
+        ws['!cols'] = sh.cols.map(function (px) { return { wpx: px }; });
+        X.utils.book_append_sheet(wb, ws, sheetName(sh.name));
+      });
+      return saveFile(fileSafe(title), X.write(wb, { type: 'array', bookType: 'xlsx' }));
+    }).catch(function (e) { toast(e.message || String(e)); });
+  }
+
+  // ---- сохранённые расчёты: аккаунт, если страница открыта на claude.ai; иначе этот браузер
+  var Store = { coll: null, me: null, user: null, account: [], local: LS.get('wb-saved') || [], mode: 'local', canWrite: false, note: '', openBox: false, status: '' };
+  function initStore() {
+    if (!(window.claude && window.claude.use)) return;
+    Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function (a) {
+      var db = a[0], user = a[1];
+      if (!db) { Store.status = 'Вход в аккаунт не определён, поэтому расчёты сохраняются только в этом браузере.'; renderSavedIfOpen(); return; }
+      Store.coll = db.collection('calcs'); Store.user = user; Store.mode = 'account'; Store.status = 'Подключаюсь к общему списку расчётов…';
+      renderSavedIfOpen();
+      return Promise.resolve(user ? user.me() : null).then(function (me) {
+        Store.me = me;
+        return user ? user.can('data.write') : null;
+      }).then(function (can) {
+        Store.canWrite = can !== false;
+        var timer = setTimeout(function () { Store.status = 'Общий список пока не отвечает. Сохранённые расчёты могут быть устаревшими.'; renderSavedIfOpen(); }, 10000);
+        Store.coll.orderBy('at', 'desc').limit(500).onSnapshot(function (snap) {
+          if (!snap.metadata.fromCache) { clearTimeout(timer); Store.status = ''; }
+          Store.account = snap.docs.map(function (d) { var o = d.data(); return { id: d.id, name: o.name, by: o.by, at: o.at, state: o.state, where: 'account' }; });
+          renderSavedIfOpen(); updateSavedBtn();
+        }, function () {
+          clearTimeout(timer); Store.mode = 'local'; Store.status = 'Общий список недоступен, расчёты сохраняются только в этом браузере.'; renderSavedIfOpen();
+        });
+      });
+    });
+  }
+  function updateSavedBtn() {
+    var b = el('btn-saved'), n = Store.account.length + Store.local.length;
+    if (b) b.textContent = 'Сохранённые расчёты' + (n ? ' (' + n + ')' : '');
+  }
+  function renderSavedIfOpen() { var b = el('savedbox'); if (b && !b.hidden) renderSaved(); updateSavedBtn(); }
+  function defaultName() { return st.cat + ' · ' + new Date().toLocaleDateString('ru-RU'); }
+  function renderSaved() {
+    var box = el('savedbox'); if (!box) return;
+    var acct = Store.mode === 'account' && Store.canWrite;
+    var where = Store.status || (acct ? 'Расчёт сохранится в аккаунте: его увидят все, кому открыт этот калькулятор.' :
+      Store.mode === 'account' ? 'У тебя доступ только на просмотр, поэтому твои расчёты сохраняются только в этом браузере. Общие расчёты ниже открывать можно.' :
+      'Расчёты сохраняются только в этом браузере и на этом компьютере.');
+    var items = Store.account.concat(Store.local).sort(function (a, b) { return (b.at || 0) - (a.at || 0); });
+    var prev = el('save-name') ? el('save-name').value : defaultName();
+    box.innerHTML = '<div class="saverow"><input id="save-name" aria-label="Название расчёта" placeholder="Название расчёта" value="' + esc(prev) + '"><button class="btn primary" id="btn-save">Сохранить расчёт</button></div>' +
+      '<div class="where" id="save-where"></div><div class="slist" id="slist"></div>';
+    el('save-where').textContent = where;
+    var list = el('slist');
+    if (!items.length) { list.innerHTML = '<div class="where">Пока ничего не сохранено. Настрой расчёт и нажми «Сохранить расчёт».</div>'; }
+    var ids = items.filter(function (i) { return i.by; }).map(function (i) { return i.by; });
+    var names = {};
+    function draw() {
+      list.innerHTML = items.length ? '' : list.innerHTML;
+      items.forEach(function (it) {
+        var row = document.createElement('div'); row.className = 'sitem';
+        var nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = it.name;
+        var who = document.createElement('span'); who.className = 'who';
+        var dt = it.at ? new Date(it.at).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+        var mine = it.where === 'local' || (Store.me && Store.me.id && it.by === Store.me.id);
+        var author = it.where === 'local' ? 'в этом браузере' : (mine ? 'ты' : ((names[it.by] && names[it.by].name) || 'другой участник'));
+        who.textContent = author + ' · ' + dt;
+        var open = document.createElement('button'); open.className = 'btn small'; open.textContent = 'Открыть';
+        open.onclick = function () { applySaved(it); };
+        row.appendChild(nm); row.appendChild(who); row.appendChild(open);
+        var isOwner = Store.me && Store.me.isOwner;
+        if (mine || isOwner) {
+          var del = document.createElement('button'); del.className = 'btn small danger'; del.textContent = 'Удалить';
+          del.onclick = function () {
+            if (del.dataset.sure !== '1') { del.dataset.sure = '1'; del.textContent = 'Точно удалить?'; setTimeout(function () { del.dataset.sure = ''; del.textContent = 'Удалить'; }, 3000); return; }
+            removeSaved(it);
+          };
+          row.appendChild(del);
+        }
+        list.appendChild(row);
+      });
+    }
+    draw();
+    if (Store.user && ids.length) Store.user.profiles(ids).then(function (ps) { names = ps; list.innerHTML = ''; draw(); });
+    el('btn-save').onclick = doSave;
+    el('save-name').onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); doSave(); } };
+  }
+  function cleanState() { return JSON.parse(JSON.stringify(st)); }
+  function doSave() {
+    var name = el('save-name').value.trim() || defaultName(), at = Date.now();
+    var localSave = function (msg) {
+      var id = 'l' + at;
+      Store.local.push({ id: id, name: name, at: at, state: cleanState(), where: 'local' });
+      if (!LS.set('wb-saved', Store.local)) { Store.local.pop(); toast('Браузер не дал сохранить расчёт.'); return; }
+      toast(msg || 'Сохранено в этом браузере'); renderSavedIfOpen();
+    };
+    if (Store.mode === 'account' && Store.canWrite) {
+      Store.coll.add({ name: name, by: (Store.me && Store.me.id) || '', at: at, state: cleanState() }).then(function () { toast('Сохранено в аккаунте'); }, function (e) {
+        if (e && e.code === 'invalid_argument') Store.canWrite = false;
+        localSave('Общий список не принял расчёт, сохранено в этом браузере');
+      });
+    } else localSave();
+  }
+  function removeSaved(it) {
+    if (it.where === 'local') {
+      Store.local = Store.local.filter(function (x) { return x.id !== it.id; }); LS.set('wb-saved', Store.local); renderSavedIfOpen(); return;
+    }
+    Store.coll.doc(it.id).delete().catch(function (e) { toast('Не удалось удалить: ' + (e && e.message || e)); });
+  }
+  function validState(s) {
+    var d = E.defaultState(C, s && C.cats.indexOf(s.cat) >= 0 ? s.cat : (st ? st.cat : C.defaultCat)), dropped = 0;
+    if (!s) return { state: d, dropped: 0 };
+    if (s.src === 'Сильные бренды' && C.data[d.cat] && C.data[d.cat][s.src]) d.src = s.src;
+    if (isFinite(s.qty) && s.qty >= 0) d.qty = s.qty;
+    d.seasons = (s.seasons || []).filter(function (x) { return C.seasons.indexOf(x) >= 0; });
+    KINDS.forEach(function (k) {
+      var src = (s.picks && s.picks[k]) || [], list = C.lists[d.cat][k] || [];
+      d.picks[k] = src.filter(function (x) { return list.indexOf(x) >= 0; });
+      dropped += src.length - d.picks[k].length;
+    });
+    if (Array.isArray(s.colors)) d.colors = s.colors.filter(function (x) { return C.colors.some(function (c) { return c.name === x; }); });
+    if (Array.isArray(s.sizeOn) && s.sizeOn.length === 10) d.sizeOn = s.sizeOn.map(function (x) { return x ? 1 : 0; });
+    return { state: d, dropped: dropped };
+  }
+  function applySaved(it) {
+    var v = validState(it.state); st = v.state; saveDraft();
+    Store.openBox = false;
+    go('calc', null);
+    toast('Открыт расчёт: ' + it.name + (v.dropped ? '. Вариантов больше нет в списках: ' + v.dropped : ''));
+  }
+
+  // ---- старт
+  function start() {
+    mainEl = el('main'); navEl = el('side');
+    if (typeof DecompressionStream === 'undefined') { mainEl.innerHTML = '<div id="boot">Браузер устарел: обнови его, чтобы открыть калькулятор.</div>'; return; }
+    Promise.all([unpack('D-calc'), unpack('D-index')]).then(function (a) {
+      C = a[0]; INDEX = a[1];
+      st = validState(LS.get('wb-draft')).state;
+      var v = LS.get('wb-view');
+      if (v && (v.sec === 'calc' || (v.sec === 'total' && INDEX.total.indexOf(v.sheet) >= 0) || (v.sec === 'cat' && INDEX.bycat[st.cat].sheets.indexOf(v.sheet) >= 0))) view = v;
+      go(view.sec, view.sheet);
+      // шрифт догружается после первого показа: без интернета страница работает на системном
+      var font = document.createElement('link'); font.rel = 'stylesheet';
+      font.href = 'https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap';
+      document.head.appendChild(font);
+      updateSavedBtn();
+      initStore();
+      window.__wb = { C: C, INDEX: INDEX, compute: function () { return E.compute(C, st); }, state: function () { return st; }, setState: function (s) { st = s; saveDraft(); go('calc', null); }, go: go, pack: pack };
+    }).catch(function (e) { mainEl.innerHTML = '<div id="boot">Не получилось открыть калькулятор: ' + esc(e.message || e) + '</div>'; });
+  }
+  start();
+})();
+
+</script>
+</body></html>
