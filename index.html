@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow">
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="xlsx-local" content="1">
 <title>Цвета для новинок</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -713,12 +713,17 @@ table.x tr[hidden] { display: none; }
   // ---- выгрузка в Excel
   function loadXlsx() {
     if (window.XLSX) return Promise.resolve(window.XLSX);
+    // сначала копия рядом со страницей (на своём сайте работает без внешних серверов), потом cdnjs
+    var srcs = (document.querySelector('meta[name="xlsx-local"]') ? ['xlsx.full.min.js'] : []).concat(['https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js']);
     return new Promise(function (ok, bad) {
-      var s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-      s.onload = function () { ok(window.XLSX); };
-      s.onerror = function () { bad(new Error('Не загрузился модуль выгрузки: нужен интернет.')); };
-      document.head.appendChild(s);
+      (function next(i) {
+        if (i >= srcs.length) return bad(new Error('Не загрузился модуль выгрузки: нужен интернет.'));
+        var s = document.createElement('script');
+        s.src = srcs[i];
+        s.onload = function () { window.XLSX ? ok(window.XLSX) : next(i + 1); };
+        s.onerror = function () { s.remove(); next(i + 1); };
+        document.head.appendChild(s);
+      })(0);
     });
   }
   function saveFile(name, data) {
